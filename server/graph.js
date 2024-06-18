@@ -25,7 +25,7 @@ function getJavaFiles(dir) {
   });
 }
 
-const dirPath = "matrices";
+const dirPath = path.join(path.join(process.cwd()), 'matrices')
 getJavaFiles(dirPath);
 
 const tree = parser.parse(sourceCode);
