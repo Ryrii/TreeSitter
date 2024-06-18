@@ -6,7 +6,9 @@ import { log } from 'console';
 const app = express();
 app.use(cors());
 const port = 3030;
-app.use(express.static(path.join(process.cwd(), '../front')));app.get('/', (req, res) => {
+console.log(path.join(process.cwd()));
+app.use(express.static(path.join(process.cwd(), 'front')));
+app.get('/', (req, res) => {
   res.sendFile({ root: path.join(process.cwd(), 'front') });
 });
 
