@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Graphique Cytoscape.js</title>
+   <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/codemirror.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/codemirror.min.js"></script>
+  
+  <style>
+    #cy {
+      width: 90vw;
+      height: 70vh;
+      border: 1px solid #ccc;
+      align-self: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>Code Source</h1>
+  <textarea id="sourceCode"></textarea>
+  <button onclick="sendCode()">Envoyer le code</button>
+  <br>
+  <h1>Graph</h1>
+
+  <div id="cy"></div>
+  <!-- <script src="index.js" type="module" > </script> -->
+  <script src="query.js" type="module" > </script>
+</body>
+</html>
