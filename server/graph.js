@@ -150,17 +150,17 @@ function mapNodeToData(node, nodes) {
       const e = nodes["constructor_declaration"].find((e) => e.name == node.name);
       return {
         data: { source: node.parent, target: e.id },
-        classes: "arrow",
+        classes: "use",
       };
     }
     return {
       data: { source: node.parent, target: e.id },
-      classes: "arrow",
+      classes: "use",
     };
   }
 
   return {
     data: { source: node.parent, target: node.id },
-    classes: "normal",
+    classes: "contain",
   };
 }

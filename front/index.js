@@ -41,18 +41,20 @@ export function updateGraph(elements) {
       {
         selector: "edge",
         style: {
-          width: 2,
-          "line-color": "#aaa",
+          width: 3,
+          "line-color": "#bbb",
+          "target-arrow-shape": "triangle",
+          'curve-style': 'bezier',
         },
       },
       {
-        selector: 'edge.arrow',
+        selector: 'edge.use',
         style: {
-          width: 2,
-          "line-color": "red",
-          "target-arrow-color": "red",
+          width: 3,
+          "line-color": "#ccc",
           "target-arrow-shape": "triangle",
-          'curve-style': 'bezier'
+          'curve-style': 'bezier',
+          'line-style': 'dashed'
 
         },
       },
