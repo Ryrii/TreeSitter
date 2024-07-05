@@ -1,53 +1,25 @@
 export function packageDecl(node) {
-    var qName = ""
-    const ids = node.descendantsOfType('identifier');
-    ids.forEach((id, index) => {
-        qName += id.text;
-        if (index !== ids.length - 1) {
-            qName += ".";
-        }
-    })
-    return qName;
+    return node.descendantsOfType('scoped_identifier')[0]?.text??node.descendantsOfType('identifier')[0]?.text
+}
+export function importDecl(node) {
+    return node.descendantsOfType('scoped_identifier')[0]?.text??node.descendantsOfType('identifier')[0]?.text+"."+node.descendantsOfType('asterisk')[0]?.text
 }
 
 export function classDecl(node) {
-    var qName = ""
-    var packageName = ""
-    const parentNode = node.parent;
-    const classIndex = parentNode.children.indexOf(node);
-    // récup package qui est eu même niveau que la classe (et non sont parent direct)
-    for (let i = classIndex - 1; i >= 0; i--) {
-        if (parentNode.children[i].type === 'package_declaration') {
-            packageName = packageDecl(parentNode.children[i]);
-            if (packageName !== "") {
-                packageName += ".";
-            }
-            break;
-        }
-        if (parentNode.children[i].type !== 'package_declaration' && parentNode.children[i].type !== 'import_declaration') {
-            break;
-        }
-    }
-    for (const c of node.children) {
-        if (c.type === 'identifier') {
-            qName = c.text;
-            break;
-        }
-    }
-    qName = node.descendantsOfType('identifier')[0].text;
-    return packageName + qName;
+    return node.nameNode.text
 }
+export function classUse(node) {
+}
+function constructor_declaration(node) {
+    // console.log(node.parametersNode)
+    return node.nameNode.text
+}
+
 export function methDecl(node) {
-    var qName = ""
-    const parentClass = node.closest('class_declaration')
-    qName += classDecl(parentClass) + ".";
-    for (const c of node.children) {
-        if (c.type === 'identifier') {
-            qName += c.text;
-            break;
-            }
-            }
-            qName += "( ";
+
+    var qName = node.nameNode.text  
+    return qName;
+    qName += "( ";
     node.descendantsOfType('formal_parameter').map(i => qName+=i.children[0].text+" ");
     qName += ")";
     return qName;
@@ -64,6 +36,9 @@ export function methUse(node) {
 }
 
 export function fieldDecl(node) {
+    var qName = node.descendantsOfType('identifier')[0].text
+    return qName;
+
     var qName = ""
     const parentClass = node.closest('class_declaration')
     qName += classDecl(parentClass) + ".";
@@ -91,11 +66,13 @@ export const nodeName = {
         return "program";
     },
     package_declaration : packageDecl,
+    import_declaration : importDecl,
     class_declaration : classDecl,
     method_declaration : methDecl,
     field_declaration : fieldDecl,
     local_variable_declaration : localVarDecl,
     type_identifier : typeIdentifier,
+    constructor_declaration : constructor_declaration,
     default : (node) => {
         // Traiter tous les autres cas ici
         // Par exemple, retourner le type de nœud :
@@ -106,3 +83,4 @@ export function getNodeName(node) {
     const handler = nodeName[node.type] || nodeName.default;
     return handler(node);
 }
+

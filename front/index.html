@@ -6,10 +6,13 @@
    <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/codemirror.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dagre/0.8.5/dagre.min.js"></script>
+  <script src="https://unpkg.com/cytoscape-dagre"></script>
+  
   
   <style>
-    #cy {
-      width: 90vw;
+    #cy,#cy2 {
+      width: 98vw;
       height: 70vh;
       border: 1px solid #ccc;
       align-self: center;
@@ -19,11 +22,30 @@
 <body>
   <h1>Code Source</h1>
   <textarea id="sourceCode"></textarea>
-  <button onclick="sendCode()">Envoyer le code</button>
-  <br>
-  <h1>Graph</h1>
+  <h3>Séléctionnez les éléments à Afficher</h3>
+  <form id="typeForm">
+    <input type="checkbox" id="class_declaration" name="type" value="class_declaration">
+    <label for="class_declaration">Class Declaration</label><br>
+    <input type="checkbox" id="constructor_declaration" name="type" value="constructor_declaration">
+    <label for="constructor_declaration">Constructor Declaration</label><br>
+    <input type="checkbox" id="method_declaration" name="type" value="method_declaration">
+    <label for="method_declaration">Method Declaration</label><br>
+    <input type="checkbox" id="field_declaration" name="type" value="field_declaration">
+    <label for="field_declaration">Field Declaration</label><br>
+    <input type="checkbox" id="local_variable_declaration" name="type" value="local_variable_declaration">
+    <label for="local_variable_declaration">Local Variable Declaration</label><br>
+    <input type="checkbox" id="type_identifier" name="type" value="type_identifier">
+    <label for="type_identifier">Type Identifier</label><br>
+  </form>
+  <button onclick="getDataTypes()">Obtenir le Graph</button>
+  <h1>Graph Initial Tree</h1>
+  <button onclick="showInitialTree()">Show Initial Tree</button>
 
   <div id="cy"></div>
+  <h1>Graph Final Tree</h1>
+
+  <div id="cy2"></div>
+
   <!-- <script src="index.js" type="module" > </script> -->
   <script src="query.js" type="module" > </script>
 </body>

@@ -1,0 +1,195 @@
+package calcul;
+
+public class Calcul {
+	// sous ce seuil la matrice devrait etre creuse
+	private static final double seuilCreuse = 0.2;
+
+	private boolean creuse;
+	private MatriceCreuse mc;
+	private MatricePleine mp;
+
+	public Calcul(int hauteur, int largeur) {
+		creuse = true;
+		mc = new MatriceCreuse(hauteur, largeur);
+		mp = null;
+	}
+
+	public void set(int x, int y, int valeur) {
+		if (creuse)
+			mc.set(x, y, valeur);
+		else
+			mp.set(x, y, valeur);
+	}
+
+	public int get(int x, int y) {
+		if (creuse)
+			return mc.get(x, y);
+		else
+			return mp.get(x, y);
+	}
+
+	public boolean estCreuse() {
+		return creuse;
+	}
+
+	void optimiser() {
+		if (creuse && mc.getTauxRemplissage() > seuilCreuse) {
+			creuse = false;
+			mp = mc.versPleine();
+			mc = null;
+		} else if (!creuse && mp.getTauxRemplissage() <= seuilCreuse) {
+			creuse = true;
+			mc = mp.versCreuse();
+			mp = null;
+		}
+	}
+}
+package calcul;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class MatriceCreuse {
+	private Map<XY, Integer> elements;
+	private int hauteur ;
+	private int largeur;
+
+	public MatriceCreuse(int hauteur, int largeur) {
+		this.hauteur = hauteur;
+		this.largeur = largeur;
+		elements = new HashMap<>();
+	}
+
+	public int getLargeur() {
+		return largeur;
+	}
+
+	public int getHauteur() {
+		return hauteur;
+	}
+
+	public void set(int x, int y, int value) {
+		if (x < 1 || x > getHauteur() || y < 1 || y > getLargeur())
+			throw new IndexOutOfBoundsException();
+		XY xy = new XY(x, y);
+		if (value != 0)
+			elements.put(xy, value);
+		else
+			elements.remove(xy);
+	}
+
+	public int get(int x, int y) {
+		if (x < 1 || x > getHauteur() || y < 1 || y > getLargeur())
+			throw new IndexOutOfBoundsException();
+		XY xy = new XY(x, y);
+		if (!elements.containsKey(xy))
+			return 0;
+		else
+			return elements.get(xy).intValue();
+	}
+
+	public MatricePleine versPleine() {
+		MatricePleine mp = new MatricePleine(hauteur, largeur);
+		for (int x = 1; x <= hauteur; ++x)
+			for (int y = 1; y <= largeur; ++y)
+				mp.set(x, y, get(x, y));
+		return mp;
+	}
+
+	public double getTauxRemplissage() {
+		return getNbNonNuls() / (double) (getLargeur() * getHauteur());
+	}
+
+	private int getNbNonNuls() {
+		return elements.size();
+	}
+
+	private static class XY {
+		public XY(int x, int y) {
+			this.x = x;
+			this.y = y;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o)
+				return true;
+			if (o == null || !(o instanceof XY))
+				return false;
+			else {
+				XY xy = (XY) o;
+				return (x == xy.x && y == xy.y);
+			}
+		}
+
+		@Override
+		public int hashCode() { // n�cessaire pour �tre dans une HashMap
+			return (x * 101) ^ y; // par exemple
+		}
+
+		private int x;
+		private int y;
+	}
+}
+package calcul;
+
+import java.util.Arrays;
+
+public class MatricePleine {
+	private int[][] tab;
+
+	public MatricePleine(int hauteur, int largeur) {
+		tab = new int[hauteur][largeur];
+		for (int i = 0; i < hauteur; ++i)
+			Arrays.fill(tab[i], 0);
+	}
+
+	public int getHauteur() {
+		return tab.length;
+	}
+
+	public int getLargeur() {
+		return tab[0].length;
+	}
+
+	public void set(int x, int y, int valeur) {
+		tab[x - 1][y - 1] = valeur;
+	}
+
+	public int get(int x, int y) {
+		return tab[x - 1][y - 1];
+	}
+
+	public MatriceCreuse versCreuse() {
+		MatriceCreuse mc = new MatriceCreuse(getHauteur(), getLargeur());
+		for (int x = 1; x <= getHauteur(); ++x)
+			for (int y = 1; y <= getLargeur(); ++y)
+				mc.set(x, y, get(x, y));
+		return mc;
+	}
+
+	public double getTauxRemplissage() {
+		return getNbNonNuls() / (double) (getLargeur() * getHauteur());
+	}
+
+	private int getNbNonNuls() {
+		int nonNuls = 0;
+		for (int x = 1; x <= getHauteur(); ++x)
+			for (int y = 1; y <= getLargeur(); ++y)
+				if (get(x, y) != 0)
+					++nonNuls;
+		return nonNuls;
+	}
+}
+package org.example;
+
+import calcul.*;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Calcul c = new Calcul(2,3);
+        MatriceCreuse mc = new MatriceCreuse(3, 4);
+        MatricePleine mp = new MatricePleine(4, 5);
+    }
+}
